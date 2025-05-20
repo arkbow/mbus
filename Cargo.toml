@@ -1,0 +1,11 @@
+[package]
+name = "mbus"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { version = "1.39.0", features = ["full", "rt-multi-thread", "macros"] }
+serde = { version = "1.0.215", features = ["derive"] }
+bincode = "2"
+rand = "0.9"
+thiserror = "2.0"
