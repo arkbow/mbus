@@ -1,4 +1,7 @@
-#[derive(Debug, Clone)]
+use bincode::{Decode, Encode};
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode)]
 pub struct Position {
     pub symbol_x: String,
     pub symbol_x_decimal: u8,
@@ -10,7 +13,7 @@ pub struct Position {
     pub bins: Vec<Bin>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode)]
 pub struct Bin {
     pub bin_id: i32,
     pub lower_price: f64,
