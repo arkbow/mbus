@@ -38,6 +38,7 @@ impl<T: for<'a> BroadcastMessage<'a>> BroadcastClient<T> {
                             }
                         }
                         Err(e) => {
+                            println!("received data(len: {}): {:?}", n, &buf[..n]);
                             println!("Decode error: {:?}", e);
                             break;
                         }
