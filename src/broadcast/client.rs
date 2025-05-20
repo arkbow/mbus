@@ -32,6 +32,7 @@ impl<T: for<'a> BroadcastMessage<'a>> BroadcastClient<T> {
                     match bincode::decode_from_slice::<T, _>(&buf[..n], bincode::config::standard())
                     {
                         Ok((data, _)) => {
+                            println!("received data(len: {})", n);
                             if let Err(e) = callback(data) {
                                 println!("Callback error: {:?}", e);
                                 break;
