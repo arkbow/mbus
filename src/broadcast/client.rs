@@ -20,7 +20,7 @@ impl<T: for<'a> BroadcastMessage<'a>> BroadcastClient<T> {
         F: FnMut(T) -> Result<(), BroadcastError> + Send + 'static,
     {
         let mut socket = UnixStream::connect(&self.socket_path).await?;
-        let mut buf = [0u8; 1024];
+        let mut buf = [0u8; 10240];
 
         loop {
             match socket.read(&mut buf).await {
