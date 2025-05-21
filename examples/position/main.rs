@@ -10,7 +10,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // 运行客户端并持续接收消息
     tokio::spawn(async move {
-        if let Err(e) = client.run(|pos| {
+        if let Err(e) = client.run(|pos| async move {
             let now = std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .unwrap()

@@ -15,9 +15,10 @@ impl<T: for<'a> BroadcastMessage<'a>> BroadcastClient<T> {
         }
     }
 
-    pub async fn run<F>(&self, mut callback: F) -> Result<(), BroadcastError>
+    pub async fn run<F, Fut>(&self, mut callback: F) -> Result<(), BroadcastError>
     where
-        F: FnMut(T) -> Result<(), BroadcastError> + Send + 'static,
+        F: FnMut(T) -> Fut + Send + 'static,
+        Fut: std::future::Future<Output = Result<(), BroadcastError>> + Send + 'static,
     {
         let mut socket = UnixStream::connect(&self.socket_path).await?;
         let mut buf = [0u8; 10240];
@@ -33,7 +34,7 @@ impl<T: for<'a> BroadcastMessage<'a>> BroadcastClient<T> {
                     {
                         Ok((data, _)) => {
                             println!("received data(len: {})", n);
-                            if let Err(e) = callback(data) {
+                            if let Err(e) = callback(data).await {
                                 println!("Callback error: {:?}", e);
                                 break;
                             }

@@ -41,7 +41,7 @@ async fn main() {
     // 运行服务器和客户端
     let (server_result, client_result) = tokio::join!(
         server.run(),
-        client.run(|data| {
+        client.run(|data| async move {
             let now = std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .unwrap()
