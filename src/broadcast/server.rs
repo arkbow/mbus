@@ -3,6 +3,7 @@ use std::path::Path;
 use tokio::io::AsyncWriteExt;
 use tokio::net::UnixListener;
 use tokio::sync::broadcast;
+use log::{debug, error};
 
 pub struct BroadcastServer<T: for<'a> BroadcastMessage<'a>> {
     socket_path: String,
@@ -30,7 +31,7 @@ impl<T: for<'a> BroadcastMessage<'a>> BroadcastServer<T> {
 
         // 启动服务器
         let listener = UnixListener::bind(&self.socket_path)?;
-        println!("Broadcast server started at {}", self.socket_path);
+        debug!("Broadcast server started at {}", self.socket_path);
 
         loop {
             let (mut socket, _) = listener.accept().await?;
@@ -38,11 +39,11 @@ impl<T: for<'a> BroadcastMessage<'a>> BroadcastServer<T> {
 
             // 为每个连接创建一个新的任务
             tokio::spawn(async move {
-                println!("New client connected");
+                debug!("New client connected");
                 while let Ok(data) = rx.recv().await {
                     let bytes = bincode::encode_to_vec(&data, bincode::config::standard()).unwrap();
                     if let Err(e) = socket.write_all(&bytes).await {
-                        println!("Error sending data: {:?}", e);
+                        error!("Error sending data: {:?}", e);
                         break;
                     }
                 }

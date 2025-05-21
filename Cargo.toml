@@ -9,3 +9,4 @@ serde = { version = "1.0.215", features = ["derive"] }
 bincode = "2"
 rand = "0.9"
 thiserror = "2.0"
+log = "0.4"

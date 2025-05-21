@@ -1,6 +1,7 @@
 use crate::broadcast::{BroadcastError, BroadcastMessage};
 use tokio::io::AsyncReadExt;
 use tokio::net::UnixStream;
+use log::{debug, error};
 
 pub struct BroadcastClient<T: for<'a> BroadcastMessage<'a>> {
     socket_path: String,
@@ -26,28 +27,28 @@ impl<T: for<'a> BroadcastMessage<'a>> BroadcastClient<T> {
         loop {
             match socket.read(&mut buf).await {
                 Ok(0) => {
-                    println!("Connection closed by server");
+                    error!("Connection closed by server");
                     break;
                 }
                 Ok(n) => {
+                    debug!("received data len: {}", n);
                     match bincode::decode_from_slice::<T, _>(&buf[..n], bincode::config::standard())
                     {
                         Ok((data, _)) => {
-                            println!("received data(len: {})", n);
                             if let Err(e) = callback(data).await {
-                                println!("Callback error: {:?}", e);
+                                error!("Callback error: {:?}", e);
                                 break;
                             }
                         }
                         Err(e) => {
-                            println!("received data(len: {}): {:?}", n, &buf[..n]);
-                            println!("Decode error: {:?}", e);
+                            error!("received data(len: {}): {:?}", n, &buf[..n]);
+                            error!("Decode error: {:?}", e);
                             break;
                         }
                     }
                 }
                 Err(e) => {
-                    println!("Read error: {:?}", e);
+                    error!("Read error: {:?}", e);
                     break;
                 }
             }
