@@ -29,8 +29,16 @@ impl Position {
         self.bins.iter().map(|bin| bin.symbol_x_amount).sum()
     }
 
+    pub fn total_x_amount_with_decimal(&self) -> f64 {
+        self.total_x_amount() as f64 / 10f64.powf(self.symbol_x_decimal as f64)
+    }
+
     pub fn total_y_amount(&self) -> u64 {
         self.bins.iter().map(|bin| bin.symbol_y_amount).sum()
+    }
+
+    pub fn total_y_amount_with_decimal(&self) -> f64 {
+        self.total_y_amount() as f64 / 10f64.powf(self.symbol_y_decimal as f64)
     }
 
     pub fn total_fee_x_amount(&self) -> u64 {
