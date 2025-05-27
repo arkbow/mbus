@@ -1,5 +1,6 @@
 use bincode::{Decode, Encode};
 use serde::{Deserialize, Serialize};
+use std::fmt;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode)]
 pub struct Position {
@@ -58,3 +59,21 @@ impl Position {
     }
 }
 
+impl fmt::Display for Position {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "Position {}/{}, active_bin: {}, price: {:.3}, x: {:.3}, y: {:.3}, fee_x: {:.3}, fee_y: {:.3}, bins: {}, bin_step: {}",
+            self.symbol_x,
+            self.symbol_y,
+            self.active_bin_id,
+            self.current_price,
+            self.total_x_amount_with_decimal(),
+            self.total_y_amount_with_decimal(),
+            self.total_fee_x_amount_with_decimal(),
+            self.total_fee_y_amount_with_decimal(),
+            self.bins.len(),
+            self.bin_step
+        )
+    }
+}
