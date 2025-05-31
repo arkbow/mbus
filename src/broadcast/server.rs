@@ -1,5 +1,6 @@
 use crate::broadcast::{BroadcastError, BroadcastMessage};
 use std::path::Path;
+use std::os::unix::fs::PermissionsExt;
 use tokio::io::AsyncWriteExt;
 use tokio::net::UnixListener;
 use tokio::sync::broadcast;
@@ -31,6 +32,12 @@ impl<T: for<'a> BroadcastMessage<'a>> BroadcastServer<T> {
 
         // 启动服务器
         let listener = UnixListener::bind(&self.socket_path)?;
+        
+        // 设置socket文件权限，允许所有用户读写
+        let mut perms = std::fs::metadata(&self.socket_path)?.permissions();
+        perms.set_mode(0o666);
+        std::fs::set_permissions(&self.socket_path, perms)?;
+        
         debug!("Broadcast server started at {}", self.socket_path);
 
         loop {
