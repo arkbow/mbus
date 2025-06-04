@@ -13,6 +13,17 @@ pub struct Position {
     pub bin_step: u16,
     pub active_bin_id: i32,
     pub bins: Vec<Bin>,
+    pub deposits: Vec<Deposit>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode)]
+pub struct Deposit {
+    pub tx_id: String,
+    pub symbol_x_amount: u64,
+    pub symbol_y_amount: u64,
+    pub symbol_x_usd_amount: f64,
+    pub symbol_y_usd_amount: f64,
+    pub timestamp: u64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode)]
@@ -57,6 +68,13 @@ impl Position {
 
     pub fn total_fee_y_amount_with_decimal(&self) -> f64 {
         self.total_fee_y_amount() as f64 / 10f64.powf(self.symbol_y_decimal as f64)
+    }
+
+    pub fn total_deposits_usd_amount(&self) -> f64 {
+        self.deposits
+            .iter()
+            .map(|deposit| deposit.symbol_x_usd_amount + deposit.symbol_y_usd_amount)
+            .sum()
     }
 }
 
