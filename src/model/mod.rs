@@ -5,6 +5,7 @@ use std::fmt;
 #[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode)]
 pub struct Position {
     pub address: String,
+    pub owner: String,
     pub symbol_x: String,
     pub symbol_x_decimal: u8,
     pub symbol_y: String,
