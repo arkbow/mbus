@@ -15,6 +15,7 @@ pub struct Position {
     pub active_bin_id: i32,
     pub bins: Vec<Bin>,
     pub deposits: Vec<Deposit>,
+    pub claims: Vec<Claim>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode)]
@@ -36,6 +37,16 @@ pub struct Bin {
     pub symbol_y_amount: u64,
     pub fee_x_amount: u64,
     pub fee_y_amount: u64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode)]
+pub struct Claim {
+    pub tx_id: String,
+    pub symbol_x_amount: u64,
+    pub symbol_y_amount: u64,
+    pub symbol_x_usd_amount: f64,
+    pub symbol_y_usd_amount: f64,
+    pub timestamp: u64,
 }
 
 impl Position {
@@ -75,6 +86,13 @@ impl Position {
         self.deposits
             .iter()
             .map(|deposit| deposit.symbol_x_usd_amount + deposit.symbol_y_usd_amount)
+            .sum()
+    }
+
+    pub fn total_claims_usd_amount(&self) -> f64 {
+        self.claims
+            .iter()
+            .map(|claim| claim.symbol_x_usd_amount + claim.symbol_y_usd_amount)
             .sum()
     }
 }
